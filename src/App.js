@@ -1,22 +1,73 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button } from 'rebass';
 import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import axios from 'axios';
 
 import './App.css';
 
+const serverApi = axios.create({
+	baseURL: 'http://localhost:8080/api/'
+});
+
 function App() {
-	useEffect(() => {});
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const accessToken = urlParams.get('access_token');
 
-	const handleSubmit = event => {
+		async function getMLHId() {
+			try {
+				return await serverApi.get('authorise', {
+					params: {
+						access_token: accessToken
+					}
+				});
+			} catch (e) {
+				console.log(e);
+			}
+		}
+		getMLHId().then(res => {
+			if (res.data.status === 'OK') {
+				console.log('changes');
+				const { mlh_data, form_data } = res.data;
+				setMLHData(mlh_data);
+				setFormData(form_data);
+				setSubmitted(form_data.submitted);
+
+				setFieldDefault(form_data.field);
+			} else {
+				console.log('Error connecting to mlh');
+			}
+		});
+	}, []);
+
+	const [mlhData, setMLHData] = useState({});
+	const [formData, setFormData] = useState({});
+	const [submitted, setSubmitted] = useState(false);
+
+	const [fieldDefault, setFieldDefault] = useState('');
+
+	const handleSubmit = async event => {
 		event.preventDefault();
-		const formData = {
-			field: event.target[0].value
-		};
-		const userData = { formData };
-
+		const newFormData = Object.assign(
+			{},
+			formData,
+			{ submitted: submitted },
+			{
+				field: event.target[0].value
+			}
+		);
+		const userData = { mlh_data: mlhData, form_data: newFormData };
 		console.log(userData);
+
+		try {
+			await serverApi.post('submit-form', {
+				data: userData
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -28,12 +79,19 @@ function App() {
 						<Input
 							id="field"
 							name="field"
-							defaultValue="Jane Doe"
+							defaultValue={fieldDefault}
 						/>
 					</Box>
 				</Flex>
 				<Box px={2} ml="auto">
 					<Button type="submit" variant={'primary'}>
+						Save
+					</Button>
+					<Button
+						type="submit"
+						onClick={() => setSubmitted(true)}
+						variant={'primary'}
+					>
 						Submit
 					</Button>
 				</Box>
