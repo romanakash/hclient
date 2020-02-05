@@ -73,16 +73,55 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<Box as="form" py={3} onSubmit={handleSubmit}>
-				<Flex mx={-2} mb={3}>
-					<Box width={1 / 2} px={2}>
-						<Label htmlFor="field">Field</Label>
+				<Flex mx={-2}>
+					<Box width={1 / 3} px={3}>
+						<Label htmlFor="firstName">First Name</Label>
 						<Input
-							id="field"
-							name="field"
+							id="firstName"
+							name="firstName"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+					<Box width={1 / 3} px={2}>
+						<Label htmlFor="lastName">Last Name</Label>
+						<Input
+							id="lastName"
+							name="lastName"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+					</Flex>
+				<Flex mx={-2} >
+					<Box width={1/3} px={3}>
+						<Label htmlFor="phoneNumber">Phone Number</Label>
+						<Input
+							id="phoneNumber"
+							name="phoneNumber"
+							defaultValue={fieldDefault}
+						/>
+					</Box>				
+				</Flex>
+				<Flex mx={-2}>
+					<Box width={1/3} px={3}>
+						<Label htmlFor="email">Email</Label>
+						<Input
+							id="email"
+							name="email"
 							defaultValue={fieldDefault}
 						/>
 					</Box>
 				</Flex>
+				<Flex mx={-2}>
+					<Box width={1/3} px={3} py={2}>
+						<Label htmlFor="university">University</Label>
+						<Input
+							id="university"
+							name="university"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				
 				<Box px={2} ml="auto">
 					<Button type="submit" variant={'primary'}>
 						Save
