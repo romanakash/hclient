@@ -8,7 +8,7 @@ import axios from 'axios';
 import './App.css';
 
 const serverApi = axios.create({
-	baseURL: 'http://localhost:8080/api/'
+	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
 
 function App() {
