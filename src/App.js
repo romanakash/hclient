@@ -8,7 +8,7 @@ import axios from 'axios';
 import './App.css';
 
 const serverApi = axios.create({
-	baseURL: 'http://localhost:8080/api/'
+	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
 
 function App() {
@@ -16,30 +16,31 @@ function App() {
 		const urlParams = new URLSearchParams(window.location.search);
 		const accessToken = urlParams.get('access_token');
 
-		async function getMLHId() {
-			try {
-				return await serverApi.get('authorise', {
-					params: {
-						access_token: accessToken
-					}
-				});
-			} catch (e) {
-				console.log(e);
+		if (accessToken) {
+			async function getMLHId() {
+				try {
+					return await serverApi.get('authorise', {
+						params: {
+							access_token: accessToken
+						}
+					});
+				} catch (e) {
+					console.log(e);
+				}
 			}
-		}
-		getMLHId().then(res => {
-			if (res.data.status === 'OK') {
-				console.log('changes');
-				const { mlh_data, form_data } = res.data;
-				setMLHData(mlh_data);
-				setFormData(form_data);
-				setSubmitted(form_data.submitted);
+			getMLHId().then(res => {
+				if (res.data.status === 'OK') {
+					const { mlh_data, form_data } = res.data;
+					setMLHData(mlh_data);
+					setFormData(form_data);
+					setSubmitted(form_data.submitted);
 
-				setFieldDefault(form_data.field);
-			} else {
-				console.log('Error connecting to mlh');
-			}
-		});
+					setFieldDefault(form_data.field);
+				} else {
+					console.log('Error connecting to mlh');
+				}
+			});
+		}
 	}, []);
 
 	const [mlhData, setMLHData] = useState({});
@@ -69,6 +70,12 @@ function App() {
 			console.log(err);
 		}
 	};
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const accessToken = urlParams.get('access_token');
+	if (!accessToken) {
+		return <div>Error Not Authorised - Go away!</div>;
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
