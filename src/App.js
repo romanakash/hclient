@@ -2,16 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button, Link, Text } from 'rebass';
-import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
 
 const config = {
-
-	apiKey:"AIzaSyBpAACdq1n1JeT5lHH45RD_HGOAtmB-24E",
-	storageBucket: "gs://created-2020.appspot.com"
-	
+	apiKey: process.env.REACT_APP_GCS_API_KEY,
+	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET	
 };
 
 firebase.initializeApp(config);
@@ -21,7 +19,8 @@ const serverApi = axios.create({
 });
 
 serverApi.defaults.headers.common['Authorization'] =
-"1TB2z5pchL0l0ckZpFk36CdqHjLYuyyh"
+  process.env.REACT_APP_AUTH_TOKEN;
+
 
 
 function App() {
@@ -78,6 +77,7 @@ function App() {
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [file, setFile] = useState(null);
+	const [choseFile, setChoseFile] = useState(false);
 
 	const uploader = useRef(null);
 
@@ -103,6 +103,7 @@ function App() {
 		const file = e.target.files[0];
 		if (file) {
 			if (file.size <= 2097152) {
+				setChoseFile(true);
 				setFile(file);
 			} else {
 				alert('File size should be smaller than 2mb');
@@ -143,14 +144,17 @@ function App() {
 			return;
 		}
 
-		if (!file) {
+		if (!file || resumeLink === '') {
 			alert('Upload you resume');
 			return;
 		}
 
-		
 
-		uploader.current.startUpload(file);
+		if (choseFile) {
+			uploader.current.startUpload(file);
+			setChoseFile(false);
+		}
+
 
 		const newFormData = Object.assign(
 			{},
