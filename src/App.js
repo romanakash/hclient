@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button } from 'rebass';
-import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
@@ -19,6 +19,8 @@ const serverApi = axios.create({
 });
 serverApi.defaults.headers.common['Authorization'] =
 	process.env.REACT_APP_AUTH_TOKEN;
+
+console.log(process.env.REACT_APP_AUTH_TOKEN);
 
 function App() {
 	useEffect(() => {
