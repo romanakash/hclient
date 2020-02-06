@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button } from 'rebass';
@@ -20,7 +20,6 @@ const serverApi = axios.create({
 
 function App() {
 	useEffect(() => {
-		console.log(process.env.GCS_STORAGE_BUCKET);
 		const urlParams = new URLSearchParams(window.location.search);
 		const accessToken = urlParams.get('access_token');
 
@@ -61,6 +60,9 @@ function App() {
 	const [resumeLink, setResumeLink] = useState('');
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
+	const [file, setFile] = useState(null);
+
+	const uploader = useRef(null);
 
 	const handleUploadStart = () => {
 		setIsUploading(true);
@@ -73,7 +75,6 @@ function App() {
 
 	const handleUploadSuccess = filename => {
 		setResumeLink(filename);
-		console.log('Successfully uploaded' + filename);
 	};
 
 	const handleUploadError = error => {
@@ -81,8 +82,27 @@ function App() {
 		console.log(error);
 	};
 
+	const handleChangeFile = e => {
+		const file = e.target.files[0];
+		if (file) {
+			if (file.size <= 2097152) {
+				setFile(file);
+			} else {
+				alert('File size should be smaller than 2mb');
+			}
+		}
+	};
+
 	const handleSubmit = async event => {
 		event.preventDefault();
+
+		if (!file) {
+			alert('Upload you resume');
+			return;
+		}
+
+		uploader.current.startUpload(file);
+
 		const newFormData = Object.assign(
 			{},
 			formData,
@@ -137,10 +157,18 @@ function App() {
 				</Box>
 				<Box px={2} ml="auto">
 					<Label>
-						{isUploading && <p>Progress: {uploadProgress}</p>}
-						{resumeLink !== '' && <p>{resumeLink}</p>}
+						{isUploading && (
+							<p>Progress: {uploadProgress + '\n'}</p>
+						)}
+						{resumeLink !== '' && (
+							<p>
+								File uploaded sucessfully, Choose file again to
+								reupload
+							</p>
+						)}
 					</Label>
 					<FileUploader
+						ref={uploader}
 						accept="application/pdf"
 						id="resume"
 						name="resume"
@@ -149,6 +177,7 @@ function App() {
 						onUploadStart={handleUploadStart}
 						onUploadError={handleUploadError}
 						onUploadSuccess={handleUploadSuccess}
+						onChange={handleChangeFile}
 						onProgress={handleProgress}
 					/>
 				</Box>
