@@ -8,8 +8,8 @@ import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
 
 const config = {
-	apiKey: process.env.GCS_API_KEY,
-	storageBucket: process.env.GCS_STORAGE_BUCKET
+	apiKey: process.env.REACT_APP_GCS_API_KEY,
+	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET
 };
 
 firebase.initializeApp(config);
@@ -42,6 +42,7 @@ function App() {
 					setMLHData(mlh_data);
 					setFormData(form_data);
 					setSubmitted(form_data.submitted);
+					setResumeLink(form_data.resumeLink);
 
 					setFieldDefault(form_data.field);
 				} else {
@@ -87,6 +88,7 @@ function App() {
 			formData,
 			{ submitted: submitted },
 			{
+				resumeLink: resumeLink,
 				field: event.target[0].value
 			}
 		);
@@ -136,9 +138,9 @@ function App() {
 				<Box px={2} ml="auto">
 					<Label>
 						{isUploading && <p>Progress: {uploadProgress}</p>}
-						{resumeLink !== '' && <p>resumeLink</p>}
+						{resumeLink !== '' && <p>{resumeLink}</p>}
 					</Label>
-					{/*<FileUploader
+					<FileUploader
 						accept="application/pdf"
 						id="resume"
 						name="resume"
@@ -148,7 +150,7 @@ function App() {
 						onUploadError={handleUploadError}
 						onUploadSuccess={handleUploadSuccess}
 						onProgress={handleProgress}
-					/>*/}
+					/>
 				</Box>
 			</Box>
 		</ThemeProvider>
