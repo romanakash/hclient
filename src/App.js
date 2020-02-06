@@ -35,7 +35,8 @@ function App() {
 					setFormData(form_data);
 					setSubmitted(form_data.submitted);
 
-					setFieldDefault(form_data.field);
+					setFormDefault(form_data);
+					
 				} else {
 					console.log('Error connecting to mlh');
 				}
@@ -47,18 +48,27 @@ function App() {
 	const [formData, setFormData] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 
-	const [fieldDefault, setFieldDefault] = useState('');
+	const [formDefault, setFormDefault] = useState({dietaryRestrictions: '', why:'', project:'', isFirstTime: false, sleepingArrangements: false});
+	const [isSleepingArrangements, setIsSleepingArrangements] = useState(false);
+	const [isFirstTime, setIsFirstTime] = useState(false);
+	const [acceptCodeOfConduct, setAcceptCodeOfConduct ] = useState(false);
+	const [acceptMlhPrivacy, setAcceptMlhPrivacy] = useState(false);
+	const [acceptSharing, setAcceptSharing] = useState(false);
 
 	const handleSubmit = async event => {
 		event.preventDefault();
+		console.log(event.target[3]);
 		const newFormData = Object.assign(
 			{},
 			formData,
 			{ submitted: submitted },
 			{
-				firstName: event.target[0].value
-				lastName: event.target[0].value
-				
+				dietaryRestrictions: event.target[0].value,
+				why: event.target[1].value,
+				project: event.target[2].value,
+				isFirstTime: event.target[3].value === 'true'? true : false,
+				sleepingArrangements: event.target[4].value === 'true'? true : false
+
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
@@ -81,137 +91,111 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<Box as="form" py={3}   onSubmit={handleSubmit}>
-				<Flex mx={-2}>
-					<Box width={1 / 4} px={3} py={3}>
-						<Label htmlFor="firstName">First Name</Label>
-						<Input
-							id="firstName"
-							name="firstName"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-					<Box width={1 / 4} px={3} py={3}>
-						<Label htmlFor="lastName">Last Name</Label>
-						<Input
-							id="lastName"
-							name="lastName"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-					</Flex>
-				<Flex mx={-2} >
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="phoneNumber">Phone Number</Label>
-						<Input
-							id="phoneNumber"
-							name="phoneNumber"
-							defaultValue={fieldDefault}
-						/>
-					</Box>	
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							name="email"
-							defaultValue={fieldDefault}
-						/>
-					</Box>			
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="university">University</Label>
-						<Input
-							id="university"
-							name="university"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="major">What are you studying?</Label>
-						<Input 
-							id="major"
-							name="major"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="level">Current level of study</Label>
-						<Select 
-							id="level"
-							name="level"
-							defaultValue={fieldDefault}>
-							<option>Undergraduate</option>
-							<option>Postgraduate</option>
-							<option>PhD</option>
+			<h1 align='center'>CreatED 2020 Application Form</h1>
+			<Box as="form" py={3}  onSubmit={handleSubmit}>
 
-						</Select>
-					</Box>
-				</Flex>
 				<Flex mx={-2}>
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="cv">Link your cv/resume</Label>
-						<Input
-							id="cv"
-							name="cv"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1/4} px={3} py={3}>
-						<Label htmlFor="dietary">Do you have any specific dietary requirements?</Label>
+					<Box width={1/2} px={3} py={3}>
+						<Label htmlFor="dietaryRestrictions">Do you have any specific dietary requirements?</Label>
 						<Input 
 							id="dietary"
 							name="dietary"
-							defaultValue={fieldDefault}
+							defaultValue={formDefault.dietaryRestrictions}
 						/>
 					</Box>
 				</Flex>
 
 				<Flex mx={-2}>
 				<Box width={1/2} px={3} py={3} >
-						<Label htmlFor="why">Why do you want to attend CreatED '20? (max. 200)</Label>
+						<Label htmlFor="why">Why do you want to attend CreatED '20? (max. 200 words)</Label>
 						<Textarea 
 							id="why"
 							name="why"
-							defaultValue={fieldDefault}
+							defaultValue={formDefault.why}
 						/>
 					</Box>
 				</Flex>
 				<Flex mx={-2}>
 				<Box width={1/2} px={3} py={3} >
-						<Label htmlFor="project">Tell us about your favourite project. (max. 200)</Label>
+						<Label htmlFor="project">Tell us about your favourite project. (max. 200 words)</Label>
 						<Textarea 
 							id="project"
 							name="project"
-							defaultValue={fieldDefault}
+							defaultValue={formDefault.project}
 						/>
 					</Box>
 				</Flex>
+				<Flex mx={-2}>
+				<Box width={1/4} px={3} py={3} >
+						<Label>
+						< Checkbox 
+							id="sleepingArrangements"
+							name="sleepingArrangements"
+							value={isSleepingArrangements}
+							onChange={() =>  setIsSleepingArrangements(!isSleepingArrangements)}
+														
+						/>
+						
+						Do you need sleeping arrangments overnight?
+						</Label>
+					</Box>
+					<Box width={1/4} px={3} py={3} >
+						<Label>
+						< Checkbox				
+							id="isFirstTime"
+							name="isFirstTime"
+							value={isFirstTime}
+							onChange={() => setIsFirstTime(!isFirstTime)}
+						/>
+						Is this your first time attending a hackathon?
+						</Label>
+					</Box>
+				</Flex>
+
 				<Flex mx={-2}>
 				<Box width={1} px={3} py={3} >
 						<Label>
 						<Checkbox 
-							id="mlhCodeAgree"
-							name="mlhCodeAgree"
+							
+							id="acceptSharing"
+							name="acceptSharing"
+							value={acceptSharing}
+							onChange={() => setAcceptSharing(!acceptSharing)}
 							
 						/>
-						<p>I have read and agree to the <Link href='https://static.mlh.io/docs/mlh-code-of-conduct.pdf'> MLH Code of Conduct</Link></p>
+						Do you consent to us sharing your resume/cv with our sponsors? (required)
+						</Label>
+					</Box>
+				</Flex>
+
+				<Flex mx={-2}>
+				<Box width={1} px={3} py={3} >
+						<Label>
+							<Checkbox 
+							mt="50%"
+							id="acceptCodeOfConduct"
+							name="acceptCodeOfConduct"
+							value={acceptCodeOfConduct}
+							onChange={() => setAcceptCodeOfConduct(!acceptCodeOfConduct)}
+							
+						/>
+						<p  mt="50%" mx={3}>I have read and agree to the <Link href='https://static.mlh.io/docs/mlh-code-of-conduct.pdf'> MLH Code of Conduct</Link></p>
 						</Label>
 					</Box>
 				</Flex>
 				<Flex mx={-2}>
-				<Box width={1} px={3} py={3} >
+				<Box width={1/2} px={3} py={3} >
 					<Label>
 						<Checkbox 
-							id="mlhPrivacy"
-							name="mlhPrivacy"
-							defaultValue={fieldDefault}
+							mt='50%'
+							mr={5}
+							id="acceptMlhPrivacy"
+							name="acceptMlhPrivacy"
+							value = {acceptMlhPrivacy}
+							onChange={() => setAcceptMlhPrivacy(!acceptMlhPrivacy)}
+
 						/>
-						<p htmlFor="mlhPrivacy">I authorise you to share my application information for event administration, ranking, MLH administration, pre- and post-event informational e-mails, and occasional messages about hackathons in-line with the <Link href='https://mlh.io/privacy'>MLH Privacy Policy</Link>. I further agree to the terms of both the MLH Contest Terms and Conditions and the MLH Privacy Policy</p>
+						<p all='unset' mt="50%" >I authorise you to share my application information for event administration, ranking, MLH administration, pre- and post-event informational e-mails, and occasional messages about hackathons in-line with the <Link href='https://mlh.io/privacy'>MLH Privacy Policy</Link>. I further agree to the terms of both the <Link href='https://github.com/MLH/mlh-policies/tree/master/prize-terms-and-conditions'>MLH Contest Terms and Conditions</Link> and the <Link href='https://mlh.io/privacy'>MLH Privacy Policy</Link></p>
 					</Label>
 					</Box>
 				</Flex>
