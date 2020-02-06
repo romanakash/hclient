@@ -77,6 +77,7 @@ function App() {
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [file, setFile] = useState(null);
+	const [choseFile, setChoseFile] = useState(false);
 
 	const uploader = useRef(null);
 
@@ -102,6 +103,7 @@ function App() {
 		const file = e.target.files[0];
 		if (file) {
 			if (file.size <= 2097152) {
+				setChoseFile(true);
 				setFile(file);
 			} else {
 				alert('File size should be smaller than 2mb');
@@ -112,12 +114,15 @@ function App() {
 	const handleSubmit = async event => {
 		event.preventDefault();
 
-		if (!file) {
+		if (!file || resumeLink === '') {
 			alert('Upload you resume');
 			return;
 		}
 
-		uploader.current.startUpload(file);
+		if (choseFile) {
+			uploader.current.startUpload(file);
+			setChoseFile(false);
+		}
 
 		const newFormData = Object.assign(
 			{},
