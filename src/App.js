@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
-import { Box, Flex, Button } from 'rebass';
+import { Box, Flex, Button, Link } from 'rebass';
 import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
 import axios from 'axios';
 
@@ -79,9 +79,9 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<Box as="form" py={3} onSubmit={handleSubmit}>
+			<Box as="form" py={3}   onSubmit={handleSubmit}>
 				<Flex mx={-2}>
-					<Box width={1 / 3} px={3}>
+					<Box width={1 / 4} px={3} py={3}>
 						<Label htmlFor="firstName">First Name</Label>
 						<Input
 							id="firstName"
@@ -89,7 +89,7 @@ function App() {
 							defaultValue={fieldDefault}
 						/>
 					</Box>
-					<Box width={1 / 3} px={2}>
+					<Box width={1 / 4} px={2} py={3}>
 						<Label htmlFor="lastName">Last Name</Label>
 						<Input
 							id="lastName"
@@ -99,27 +99,25 @@ function App() {
 					</Box>
 					</Flex>
 				<Flex mx={-2} >
-					<Box width={1/3} px={3}>
+					<Box width={1/4} px={3} py={3}>
 						<Label htmlFor="phoneNumber">Phone Number</Label>
 						<Input
 							id="phoneNumber"
 							name="phoneNumber"
 							defaultValue={fieldDefault}
 						/>
-					</Box>				
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1/3} px={3}>
+					</Box>	
+					<Box width={1/4} px={3} py={3}>
 						<Label htmlFor="email">Email</Label>
 						<Input
 							id="email"
 							name="email"
 							defaultValue={fieldDefault}
 						/>
-					</Box>
+					</Box>			
 				</Flex>
 				<Flex mx={-2}>
-					<Box width={1/3} px={3} py={2}>
+					<Box width={1/4} px={3} py={3}>
 						<Label htmlFor="university">University</Label>
 						<Input
 							id="university"
@@ -128,12 +126,99 @@ function App() {
 						/>
 					</Box>
 				</Flex>
-				
-				<Box px={2} ml="auto">
-					<Button type="submit" variant={'primary'}>
+				<Flex mx={-2}>
+					<Box width={2/5} px={3} py={3}>
+						<Label htmlFor="cv">Link your cv/resume</Label>
+						<Input
+							id="cv"
+							name="cv"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+					<Box width={1} px={3} py={3}>
+						<Label htmlFor="dietary">Do you have any specific dietary requirements?</Label>
+						<Input 
+							id="dietary"
+							name="dietary"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+					<Box width={1} px={3} py={3}>
+						<Label htmlFor="major">What are you studying?</Label>
+						<Input 
+							id="major"
+							name="major"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+					<Box width={1} px={3} py={3}>
+						<Label htmlFor="level">Current level of study</Label>
+						<Select 
+							id="level"
+							name="level"
+							defaultValue={fieldDefault}>
+							<option>Undergraduate</option>
+							<option>Postgraduate</option>
+							<option>PhD</option>
+
+						</Select>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+				<Box width={1} px={3} py={3} >
+						<Label htmlFor="why">Why do you want to attend CreatED '20? (max. 200)</Label>
+						<Textarea 
+							id="why"
+							name="why"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+				<Box width={1} px={3} py={3} >
+						<Label htmlFor="project">Tell us about your favourite project. (max. 200)</Label>
+						<Textarea 
+							id="project"
+							name="project"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+				<Box width={1} px={3} py={3} >
+						<Label>
+						<Checkbox 
+							id="mlhCodeAgree"
+							name="mlhCodeAgree"
+							
+						/>
+						<p>I have read and agree to the <Link href='https://static.mlh.io/docs/mlh-code-of-conduct.pdf'> MLH Code of Conduct</Link></p>
+						</Label>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+				<Box width={1} px={3} py={3} >
+					<Label>
+						<Checkbox 
+							id="mlhPrivacy"
+							name="mlhPrivacy"
+							defaultValue={fieldDefault}
+						/>
+						<p htmlFor="mlhPrivacy">I authorise you to share my application information for event administration, ranking, MLH administration, pre- and post-event informational e-mails, and occasional messages about hackathons in-line with the <Link href='https://mlh.io/privacy'>MLH Privacy Policy</Link>. I further agree to the terms of both the MLH Contest Terms and Conditions and the MLH Privacy Policy</p>
+					</Label>
+					</Box>
+				</Flex>
+
+				<Box px={2} py={2} ml="auto">
+					<Button px={2} mx={2} type="submit" variant={'primary'}>
 						Save
 					</Button>
-					<Button
+					<Button 
+						px={2}
 						type="submit"
 						onClick={() => setSubmitted(true)}
 						variant={'primary'}
