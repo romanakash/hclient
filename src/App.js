@@ -3,9 +3,16 @@ import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button } from 'rebass';
 import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import firebase from 'firebase';
 import axios from 'axios';
+import FileUploader from 'react-firebase-file-uploader';
 
-import './App.css';
+const config = {
+	apiKey: process.env.GCS_API_KEY,
+	storageBucket: process.env.GCS_STORAGE_BUCKET
+};
+
+firebase.initializeApp(config);
 
 const serverApi = axios.create({
 	baseURL: 'https://created-2020-server.herokuapp.com/api'
@@ -13,6 +20,7 @@ const serverApi = axios.create({
 
 function App() {
 	useEffect(() => {
+		console.log(process.env.GCS_STORAGE_BUCKET);
 		const urlParams = new URLSearchParams(window.location.search);
 		const accessToken = urlParams.get('access_token');
 
@@ -48,6 +56,29 @@ function App() {
 	const [submitted, setSubmitted] = useState(false);
 
 	const [fieldDefault, setFieldDefault] = useState('');
+
+	const [resumeLink, setResumeLink] = useState('');
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadProgress, setUploadProgress] = useState(0);
+
+	const handleUploadStart = () => {
+		setIsUploading(true);
+		setUploadProgress(0);
+	};
+
+	const handleProgress = progress => {
+		setUploadProgress(progress);
+	};
+
+	const handleUploadSuccess = filename => {
+		setResumeLink(filename);
+		console.log('Successfully uploaded' + filename);
+	};
+
+	const handleUploadError = error => {
+		setIsUploading(false);
+		console.log(error);
+	};
 
 	const handleSubmit = async event => {
 		event.preventDefault();
@@ -101,6 +132,23 @@ function App() {
 					>
 						Submit
 					</Button>
+				</Box>
+				<Box px={2} ml="auto">
+					<Label>
+						{isUploading && <p>Progress: {uploadProgress}</p>}
+						{resumeLink !== '' && <p>resumeLink</p>}
+					</Label>
+					{/*<FileUploader
+						accept="application/pdf"
+						id="resume"
+						name="resume"
+						randomizeFilename={true}
+						storageRef={firebase.storage().ref('resumes')}
+						onUploadStart={handleUploadStart}
+						onUploadError={handleUploadError}
+						onUploadSuccess={handleUploadSuccess}
+						onProgress={handleProgress}
+					/>*/}
 				</Box>
 			</Box>
 		</ThemeProvider>

@@ -10,15 +10,15 @@
 		"@testing-library/user-event": "^7.2.1",
 		"axios": "^0.19.2",
 		"emotion-theming": "^10.0.27",
-		"express": "^4.17.1",
+		"firebase": "^7.8.0",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0",
+		"react-firebase-file-uploader": "^2.4.3",
 		"react-scripts": "3.3.1",
 		"rebass": "^4.0.7"
 	},
 	"scripts": {
-		"start": "node index.js",
-		"client": "react-scripts start",
+		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
@@ -37,5 +37,6 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
-	}
+	},
+	"proxy": "https://created-2020-server.herokuapp.com/"
 }
