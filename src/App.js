@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button, Link, Text } from 'rebass';
-import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
 
 const config = {
 	apiKey: process.env.REACT_APP_GCS_API_KEY,
-	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET
+	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET	
 };
 
 firebase.initializeApp(config);
@@ -19,9 +19,9 @@ const serverApi = axios.create({
 });
 
 serverApi.defaults.headers.common['Authorization'] =
-	process.env.REACT_APP_AUTH_TOKEN;
+  process.env.REACT_APP_AUTH_TOKEN;
 
-console.log(process.env.REACT_APP_AUTH_TOKEN);
+
 
 function App() {
 	useEffect(() => {
@@ -113,29 +113,61 @@ function App() {
 
 	const handleSubmit = async event => {
 		event.preventDefault();
+		const dietaryRestrictions=event.target[0].value
+		const why=event.target[1].value;
+		const project=event.target[2].value;
+		const isSleepingArrangements=event.target[3].value;
+		const isFirstTime=event.target[4].value;
+		const acceptSharing=event.target[5].value;
+		const acceptCodeOfConduct=event.target[6].value;
+		const acceptMlhPrivacy=event.target[7].value;
+		if (!why){
+			alert('Please let us know why you would like to attend CreatED 2020');
+			return;
+		}
+		if(!project){
+			alert('Remember to let us know about you favourite project');
+			return;
+		}
+		if(acceptSharing !== 'true'){
+			alert('Not submitted, we need to share your cv with our sponsors to keep them happy');
+			return;
+		}
+
+		if(acceptCodeOfConduct !== 'true'){
+			alert('You must accept the MLH Code of Conduct to Submit!');
+			return;
+		}
+		
+		if(acceptMlhPrivacy !== 'true'){
+			alert('Not submitted, you need to accept MLH\'s Privacy Policy');
+			return;
+		}
 
 		if (!file || resumeLink === '') {
 			alert('Upload you resume');
 			return;
 		}
 
+
 		if (choseFile) {
 			uploader.current.startUpload(file);
 			setChoseFile(false);
 		}
+
 
 		const newFormData = Object.assign(
 			{},
 			formData,
 			{ submitted: submitted },
 			{
-				dietaryRestrictions: event.target[0].value,
-				why: event.target[1].value,
-				project: event.target[2].value,
-				isFirstTime: event.target[3].value === 'true' ? true : false,
-				sleepingArrangements:
-					event.target[4].value === 'true' ? true : false,
-				resumeLink: resumeLink
+				dietaryRestrictions,
+				why,
+				project,
+				isFirstTime: isFirstTime === 'true' ? true : false,
+				isSleepingArrangements:
+					isSleepingArrangements === 'true' ? true : false,
+				resumeLink
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
