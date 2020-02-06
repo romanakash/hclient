@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
 import { Box, Flex, Button, Link ,Text} from 'rebass';
 import { Label, Input, Select, Textarea, Radio, Checkbox } from '@rebass/forms';
+import firebase from 'firebase';
 import axios from 'axios';
+import FileUploader from 'react-firebase-file-uploader';
 
-import './App.css';
+const config = {
+	apiKey: process.env.REACT_APP_GCS_API_KEY,
+	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET
+};
+
+firebase.initializeApp(config);
 
 const serverApi = axios.create({
 	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
+
+serverApi.defaults.headers.common['Authorization'] =
+	process.env.REACT_APP_AUTH_TOKEN;
+
 function App() {
 	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -33,6 +44,7 @@ function App() {
 					setMLHData(mlh_data);
 					setFormData(form_data);
 					setSubmitted(form_data.submitted);
+					setResumeLink(form_data.resumeLink);
 
 					setFormDefault(form_data);
 					
@@ -54,9 +66,52 @@ function App() {
 	const [acceptMlhPrivacy, setAcceptMlhPrivacy] = useState(false);
 	const [acceptSharing, setAcceptSharing] = useState(false);
 
+	const [resumeLink, setResumeLink] = useState('');
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadProgress, setUploadProgress] = useState(0);
+	const [file, setFile] = useState(null);
+
+	const uploader = useRef(null);
+
+	const handleUploadStart = () => {
+		setIsUploading(true);
+		setUploadProgress(0);
+	};
+
+	const handleProgress = progress => {
+		setUploadProgress(progress);
+	};
+
+	const handleUploadSuccess = filename => {
+		setResumeLink(filename);
+	};
+
+	const handleUploadError = error => {
+		setIsUploading(false);
+		console.log(error);
+	};
+
+	const handleChangeFile = e => {
+		const file = e.target.files[0];
+		if (file) {
+			if (file.size <= 2097152) {
+				setFile(file);
+			} else {
+				alert('File size should be smaller than 2mb');
+			}
+		}
+	};
+
 	const handleSubmit = async event => {
 		event.preventDefault();
-		console.log(event.target[3]);
+
+		if (!file) {
+			alert('Upload you resume');
+			return;
+		}
+
+		uploader.current.startUpload(file);
+
 		const newFormData = Object.assign(
 			{},
 			formData,
@@ -67,7 +122,7 @@ function App() {
 				project: event.target[2].value,
 				isFirstTime: event.target[3].value === 'true'? true : false,
 				sleepingArrangements: event.target[4].value === 'true'? true : false
-
+				resumeLink: resumeLink
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
@@ -197,7 +252,7 @@ function App() {
 					</Box>
 				</Flex>
 				<Flex style ={{display:'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 30}}>
-				<Box   >
+				<Box>
 					<Button  type="submit" variant={'primary'} mr={5} >
 						Save
 					</Button>
@@ -211,6 +266,32 @@ function App() {
 					</Button>
 				</Box>
 				</Flex>
+        <Box px={2} ml="auto">
+					<Label>
+						{isUploading && (
+							<p>Progress: {uploadProgress + '\n'}</p>
+						)}
+						{resumeLink !== '' && (
+							<p>
+								File uploaded sucessfully, Choose file again to
+								reupload
+							</p>
+						)}
+					</Label>
+					<FileUploader
+						ref={uploader}
+						accept="application/pdf"
+						id="resume"
+						name="resume"
+						randomizeFilename={true}
+						storageRef={firebase.storage().ref('resumes')}
+						onUploadStart={handleUploadStart}
+						onUploadError={handleUploadError}
+						onUploadSuccess={handleUploadSuccess}
+						onChange={handleChangeFile}
+						onProgress={handleProgress}
+					/>
+				</Box>
 			</Box>
 		</ThemeProvider>
 	);
