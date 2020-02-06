@@ -17,6 +17,8 @@ firebase.initializeApp(config);
 const serverApi = axios.create({
 	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
+serverApi.defaults.headers.common['Authorization'] =
+	process.env.REACT_APP_AUTH_TOKEN;
 
 function App() {
 	useEffect(() => {
