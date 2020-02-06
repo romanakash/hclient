@@ -56,7 +56,9 @@ function App() {
 			formData,
 			{ submitted: submitted },
 			{
-				field: event.target[0].value
+				firstName: event.target[0].value
+				lastName: event.target[0].value
+				
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
@@ -89,7 +91,7 @@ function App() {
 							defaultValue={fieldDefault}
 						/>
 					</Box>
-					<Box width={1 / 4} px={2} py={3}>
+					<Box width={1 / 4} px={3} py={3}>
 						<Label htmlFor="lastName">Last Name</Label>
 						<Input
 							id="lastName"
@@ -127,27 +129,7 @@ function App() {
 					</Box>
 				</Flex>
 				<Flex mx={-2}>
-					<Box width={2/5} px={3} py={3}>
-						<Label htmlFor="cv">Link your cv/resume</Label>
-						<Input
-							id="cv"
-							name="cv"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1} px={3} py={3}>
-						<Label htmlFor="dietary">Do you have any specific dietary requirements?</Label>
-						<Input 
-							id="dietary"
-							name="dietary"
-							defaultValue={fieldDefault}
-						/>
-					</Box>
-				</Flex>
-				<Flex mx={-2}>
-					<Box width={1} px={3} py={3}>
+					<Box width={1/4} px={3} py={3}>
 						<Label htmlFor="major">What are you studying?</Label>
 						<Input 
 							id="major"
@@ -155,7 +137,7 @@ function App() {
 							defaultValue={fieldDefault}
 						/>
 					</Box>
-					<Box width={1} px={3} py={3}>
+					<Box width={1/4} px={3} py={3}>
 						<Label htmlFor="level">Current level of study</Label>
 						<Select 
 							id="level"
@@ -169,7 +151,28 @@ function App() {
 					</Box>
 				</Flex>
 				<Flex mx={-2}>
-				<Box width={1} px={3} py={3} >
+					<Box width={1/4} px={3} py={3}>
+						<Label htmlFor="cv">Link your cv/resume</Label>
+						<Input
+							id="cv"
+							name="cv"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+				<Flex mx={-2}>
+					<Box width={1/4} px={3} py={3}>
+						<Label htmlFor="dietary">Do you have any specific dietary requirements?</Label>
+						<Input 
+							id="dietary"
+							name="dietary"
+							defaultValue={fieldDefault}
+						/>
+					</Box>
+				</Flex>
+
+				<Flex mx={-2}>
+				<Box width={1/2} px={3} py={3} >
 						<Label htmlFor="why">Why do you want to attend CreatED '20? (max. 200)</Label>
 						<Textarea 
 							id="why"
@@ -179,7 +182,7 @@ function App() {
 					</Box>
 				</Flex>
 				<Flex mx={-2}>
-				<Box width={1} px={3} py={3} >
+				<Box width={1/2} px={3} py={3} >
 						<Label htmlFor="project">Tell us about your favourite project. (max. 200)</Label>
 						<Textarea 
 							id="project"
