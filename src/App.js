@@ -33,9 +33,7 @@ serverApi.interceptors.request.use(config => {
 function App() {
 	useEffect(() => {
 		const hashurl = window.location.hash;
-		const accessToken = hashurl
-			.split('=')[1]
-			.replace('&token_type=Bearer', '');
+		const accessToken = hashurl.split('=')[1].replace('&token_type', '');
 		console.log(accessToken);
 
 		if (accessToken) {
