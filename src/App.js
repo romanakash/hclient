@@ -17,10 +17,7 @@ const config = {
 firebase.initializeApp(config);
 
 const serverApi = axios.create({
-	baseURL:
-		process.env.HEROKU === true
-			? 'https://created-2020-server.herokuapp.com/api'
-			: 'http://localhost:8080/api'
+	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
 
 serverApi.interceptors.request.use(config => {
