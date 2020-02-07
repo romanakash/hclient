@@ -156,8 +156,8 @@ function App() {
 			return;
 		}
 
-		if (!file || resumeLink === '') {
-			alert('Upload you resume');
+		if (!file && resumeLink === '') {
+			alert('Upload your resume');
 			return;
 		}
 
