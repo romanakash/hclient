@@ -21,6 +21,9 @@ const serverApi = axios.create({
 });
 
 serverApi.interceptors.request.use(config => {
+	if (config.method === 'OPTIONS') {
+		return config;
+	}
 	config.headers.auth = process.env.REACT_APP_AUTH_TOKEN;
 	return config;
 });
