@@ -267,7 +267,7 @@ function App() {
 					<Box
 						width={1 / 2}
 						style={{
-							display: 'inline-flex',
+							display: 'flex',
 							flexDirection: 'column',
 							alignItems: 'center'
 						}}
@@ -289,7 +289,7 @@ function App() {
 					<Box
 						width={1 / 2}
 						style={{
-							display: 'inline-flex',
+							display: 'flex',
 							flexDirection: 'column',
 							alignItems: 'center',
 							paddingTop: 5
