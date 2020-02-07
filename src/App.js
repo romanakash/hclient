@@ -118,9 +118,10 @@ function App() {
 		const project = event.target[2].value;
 		const isSleepingArrangements = event.target[3].value;
 		const isFirstTime = event.target[4].value;
-		const acceptSharing = event.target[5].value;
-		const acceptCodeOfConduct = event.target[6].value;
-		const acceptMlhPrivacy = event.target[7].value;
+		const acceptSharing = event.target[6].value;
+		const acceptCodeOfConduct = event.target[7].value;
+		const acceptMlhPrivacy = event.target[8].value;
+		console.log(acceptSharing);
 		if (!why) {
 			alert(
 				'Please let us know why you would like to attend CreatED 2020'
@@ -131,6 +132,12 @@ function App() {
 			alert('Remember to let us know about you favourite project');
 			return;
 		}
+
+		if (!file && resumeLink === '') {
+			alert('Upload you resume');
+			return;
+		}
+		
 		if (acceptSharing !== 'true') {
 			alert(
 				'Not submitted, we need to share your cv with our sponsors to keep them happy'
@@ -148,10 +155,6 @@ function App() {
 			return;
 		}
 
-		if (!file || resumeLink === '') {
-			alert('Upload you resume');
-			return;
-		}
 
 		if (choseFile) {
 			uploader.current.startUpload(file);
