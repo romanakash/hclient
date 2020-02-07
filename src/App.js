@@ -17,26 +17,22 @@ const config = {
 firebase.initializeApp(config);
 
 const serverApi = axios.create({
-	baseURL: 'https://created-2020-server.herokuapp.com/api'
-});
-
-serverApi.interceptors.request.use(config => {
-	if (config.url !== 'authorise') {
-		config.headers = {
-			...config.headers,
-			Authorization: process.env.REACT_APP_AUTH_TOKEN
-		};
-	}
-	return config;
+	baseURL:
+		process.env.NODE_ENV === 'production'
+			? 'https://created-2020-server.herokuapp.com/api'
+			: 'https://localhost:8080/'
 });
 
 function App() {
 	useEffect(() => {
 		const hashurl = window.location.hash;
-		const accessToken = hashurl.split('=')[1].replace('&token_type', '');
-		console.log(accessToken);
+		let accessToken = hashurl.substring(
+			hashurl.indexOf('#') + 1,
+			hashurl.indexOf('&')
+		);
 
 		if (accessToken) {
+			accessToken = accessToken.split('=')[1];
 			async function getMLHId() {
 				try {
 					return await serverApi.get('authorise', {
@@ -193,8 +189,13 @@ function App() {
 	};
 
 	const hashurl = window.location.hash;
-	const accessToken = hashurl.split('=')[1];
-	console.log(accessToken);
+	let accessToken = hashurl.substring(
+		hashurl.indexOf('#') + 1,
+		hashurl.indexOf('&')
+	);
+	if (accessToken) {
+		accessToken = accessToken.split('=')[1];
+	}
 	if (!accessToken) {
 		return <div>Error Not Authorised - Go away!</div>;
 	}
