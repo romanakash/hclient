@@ -20,7 +20,7 @@ const serverApi = axios.create({
 	baseURL:
 		process.env.NODE_ENV === 'production'
 			? 'https://created-2020-server.herokuapp.com/api'
-			: 'https://localhost:8080/'
+			: 'http://localhost:8080/api'
 });
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
 		const hashurl = window.location.hash;
 		let accessToken = hashurl.substring(
 			hashurl.indexOf('#') + 1,
-			hashurl.indexOf('&')
+			hashurl.indexOf('&') !== -1 ? hashurl.indexOf('&') : hashurl.length
 		);
 
 		if (accessToken) {
@@ -191,7 +191,7 @@ function App() {
 	const hashurl = window.location.hash;
 	let accessToken = hashurl.substring(
 		hashurl.indexOf('#') + 1,
-		hashurl.indexOf('&')
+		hashurl.indexOf('&') !== -1 ? hashurl.indexOf('&') : hashurl.length
 	);
 	if (accessToken) {
 		accessToken = accessToken.split('=')[1];
