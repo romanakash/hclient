@@ -6,6 +6,7 @@ import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
+require('dotenv').config();
 
 const config = {
 	apiKey: process.env.REACT_APP_GCS_API_KEY,
@@ -28,7 +29,7 @@ function App() {
 		const urlParams = new URLSearchParams(window.location.search);
 		const accessToken = urlParams.get('access_token');
 
-		if (accessToken) {
+		/*if (accessToken) {
 			async function getMLHId() {
 				try {
 					return await serverApi.get('authorise', {
@@ -53,7 +54,7 @@ function App() {
 					console.log('Error connecting to mlh');
 				}
 			});
-		}
+		} */
 	}, []);
 
 	const [mlhData, setMLHData] = useState({});
@@ -266,7 +267,7 @@ function App() {
 					<Box
 						width={1 / 2}
 						style={{
-							display: 'flex',
+							display: 'inline-flex',
 							flexDirection: 'column',
 							alignItems: 'center'
 						}}
@@ -288,9 +289,10 @@ function App() {
 					<Box
 						width={1 / 2}
 						style={{
-							display: 'flex',
+							display: 'inline-flex',
 							flexDirection: 'column',
-							alignItems: 'center'
+							alignItems: 'center',
+							paddingTop: 5
 						}}
 					>
 						<Label>
@@ -303,6 +305,42 @@ function App() {
 							Is this your first time attending a hackathon?
 						</Label>
 					</Box>
+				</Flex>
+				<Flex  style={{
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						paddingTop: 30
+						
+					}}>
+				<Box width={1/2}>
+					<Label>
+						<Text pb={2}> Please upload a copy of your cv:</Text>
+						{isUploading && (
+							<p>Progress: {uploadProgress + '\n'}</p>
+						)}
+						{resumeLink !== '' && (
+							<p>
+								File uploaded sucessfully, Choose file again to
+								reupload
+							</p>
+						)}
+					</Label>
+					<FileUploader
+						ref={uploader}
+						accept="application/pdf"
+						id="resume"
+						name="resume"
+						randomizeFilename={true}
+						storageRef={firebase.storage().ref('resumes')}
+						onUploadStart={handleUploadStart}
+						onUploadError={handleUploadError}
+						onUploadSuccess={handleUploadSuccess}
+						onChange={handleChangeFile}
+						onProgress={handleProgress}
+						
+					/>
+				</Box>
 				</Flex>
 
 				<Flex
@@ -341,7 +379,7 @@ function App() {
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
-						paddingTop: 20
+						paddingTop: 25
 					}}
 				>
 					<Box
@@ -383,7 +421,8 @@ function App() {
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
-							alignItems: 'center'
+							alignItems: 'center',
+							paddingTop: 5
 						}}
 					>
 						<Label>
@@ -439,32 +478,6 @@ function App() {
 						</Button>
 					</Box>
 				</Flex>
-				<Box px={2} ml="auto">
-					<Label>
-						{isUploading && (
-							<p>Progress: {uploadProgress + '\n'}</p>
-						)}
-						{resumeLink !== '' && (
-							<p>
-								File uploaded sucessfully, Choose file again to
-								reupload
-							</p>
-						)}
-					</Label>
-					<FileUploader
-						ref={uploader}
-						accept="application/pdf"
-						id="resume"
-						name="resume"
-						randomizeFilename={true}
-						storageRef={firebase.storage().ref('resumes')}
-						onUploadStart={handleUploadStart}
-						onUploadError={handleUploadError}
-						onUploadSuccess={handleUploadSuccess}
-						onChange={handleChangeFile}
-						onProgress={handleProgress}
-					/>
-				</Box>
 			</Box>
 		</ThemeProvider>
 	);
