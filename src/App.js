@@ -23,6 +23,11 @@ const serverApi = axios.create({
 			: 'http://localhost:8080/api'
 });
 
+serverApi.interceptors.request.use(config => {
+	config.headers.auth = process.env.REACT_APP_AUTH_TOKEN;
+	return config;
+});
+
 function App() {
 	useEffect(() => {
 		const hashurl = window.location.hash;
@@ -177,7 +182,6 @@ function App() {
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
-		console.log(userData);
 
 		try {
 			await serverApi.post('submit-form', {
