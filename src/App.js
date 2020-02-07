@@ -20,8 +20,15 @@ const serverApi = axios.create({
 	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
 
-serverApi.defaults.headers.common['Authorization'] =
-	process.env.REACT_APP_AUTH_TOKEN;
+serverApi.interceptors.request.use(config => {
+	if (config.url !== 'authorise') {
+		config.headers = {
+			...config.headers,
+			Authorization: process.env.REACT_APP_AUTH_TOKEN
+		};
+	}
+	return config;
+});
 
 function App() {
 	useEffect(() => {
@@ -187,6 +194,7 @@ function App() {
 
 	const hashurl = window.location.hash;
 	const accessToken = hashurl.split('=')[1];
+	console.log(accessToken);
 	if (!accessToken) {
 		return <div>Error Not Authorised - Go away!</div>;
 	}
