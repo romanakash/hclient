@@ -6,8 +6,8 @@ import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
-
 require('dotenv').config();
+
 
 const config = {
 	apiKey: process.env.REACT_APP_GCS_API_KEY,
@@ -28,6 +28,7 @@ serverApi.interceptors.request.use(config => {
 function App() {
 	useEffect(() => {
 		const hashurl = window.location.hash;
+
 		let accessToken = hashurl.substring(
 			hashurl.indexOf('#') + 1,
 			hashurl.indexOf('&') !== -1 ? hashurl.indexOf('&') : hashurl.length
@@ -59,7 +60,7 @@ function App() {
 					console.log('Error connecting to mlh');
 				}
 			});
-		}
+		} 
 	}, []);
 
 	const [mlhData, setMLHData] = useState({});
@@ -124,9 +125,10 @@ function App() {
 		const project = event.target[2].value;
 		const isSleepingArrangements = event.target[3].value;
 		const isFirstTime = event.target[4].value;
-		const acceptSharing = event.target[5].value;
-		const acceptCodeOfConduct = event.target[6].value;
-		const acceptMlhPrivacy = event.target[7].value;
+		const acceptSharing = event.target[6].value;
+		const acceptCodeOfConduct = event.target[7].value;
+		const acceptMlhPrivacy = event.target[8].value;
+		console.log(acceptSharing);
 		if (!why) {
 			alert(
 				'Please let us know why you would like to attend CreatED 2020'
@@ -137,6 +139,12 @@ function App() {
 			alert('Remember to let us know about you favourite project');
 			return;
 		}
+
+		if (!file && resumeLink === '') {
+			alert('Upload you resume');
+			return;
+		}
+		
 		if (acceptSharing !== 'true') {
 			alert(
 				'Not submitted, we need to share your cv with our sponsors to keep them happy'
@@ -303,7 +311,8 @@ function App() {
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
-							alignItems: 'center'
+							alignItems: 'center',
+							paddingTop: 5
 						}}
 					>
 						<Label>
@@ -316,6 +325,42 @@ function App() {
 							Is this your first time attending a hackathon?
 						</Label>
 					</Box>
+				</Flex>
+				<Flex  style={{
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						paddingTop: 30
+						
+					}}>
+				<Box width={1/2}>
+					<Label>
+						<Text pb={2}> Please upload a copy of your cv:</Text>
+						{isUploading && (
+							<p>Progress: {uploadProgress + '\n'}</p>
+						)}
+						{resumeLink !== '' && (
+							<p>
+								File uploaded sucessfully, Choose file again to
+								reupload
+							</p>
+						)}
+					</Label>
+					<FileUploader
+						ref={uploader}
+						accept="application/pdf"
+						id="resume"
+						name="resume"
+						randomizeFilename={true}
+						storageRef={firebase.storage().ref('resumes')}
+						onUploadStart={handleUploadStart}
+						onUploadError={handleUploadError}
+						onUploadSuccess={handleUploadSuccess}
+						onChange={handleChangeFile}
+						onProgress={handleProgress}
+						
+					/>
+				</Box>
 				</Flex>
 
 				<Flex
@@ -354,7 +399,7 @@ function App() {
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
-						paddingTop: 20
+						paddingTop: 25
 					}}
 				>
 					<Box
@@ -396,7 +441,8 @@ function App() {
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
-							alignItems: 'center'
+							alignItems: 'center',
+							paddingTop: 5
 						}}
 					>
 						<Label>
@@ -452,32 +498,6 @@ function App() {
 						</Button>
 					</Box>
 				</Flex>
-				<Box px={2} ml="auto">
-					<Label>
-						{isUploading && (
-							<p>Progress: {uploadProgress + '\n'}</p>
-						)}
-						{resumeLink !== '' && (
-							<p>
-								File uploaded sucessfully, Choose file again to
-								reupload
-							</p>
-						)}
-					</Label>
-					<FileUploader
-						ref={uploader}
-						accept="application/pdf"
-						id="resume"
-						name="resume"
-						randomizeFilename={true}
-						storageRef={firebase.storage().ref('resumes')}
-						onUploadStart={handleUploadStart}
-						onUploadError={handleUploadError}
-						onUploadSuccess={handleUploadSuccess}
-						onChange={handleChangeFile}
-						onProgress={handleProgress}
-					/>
-				</Box>
 			</Box>
 		</ThemeProvider>
 	);
