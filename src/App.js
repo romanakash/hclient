@@ -20,15 +20,22 @@ const serverApi = axios.create({
 	baseURL: 'https://created-2020-server.herokuapp.com/api'
 });
 
-serverApi.defaults.headers.common['Authorization'] =
-	process.env.REACT_APP_AUTH_TOKEN;
+serverApi.interceptors.request.use(config => {
+	config.headers.auth = process.env.REACT_APP_AUTH_TOKEN;
+	return config;
+});
 
 function App() {
 	useEffect(() => {
 		const hashurl = window.location.hash;
-		const accessToken = hashurl.split('=')[1];
+
+		let accessToken = hashurl.substring(
+			hashurl.indexOf('#') + 1,
+			hashurl.indexOf('&') !== -1 ? hashurl.indexOf('&') : hashurl.length
+		);
 
 		if (accessToken) {
+			accessToken = accessToken.split('=')[1];
 			async function getMLHId() {
 				try {
 					return await serverApi.get('authorise', {
@@ -155,6 +162,10 @@ function App() {
 			return;
 		}
 
+		if (!file && resumeLink === '') {
+			alert('Upload your resume');
+			return;
+		}
 
 		if (choseFile) {
 			uploader.current.startUpload(file);
@@ -176,7 +187,6 @@ function App() {
 			}
 		);
 		const userData = { mlh_data: mlhData, form_data: newFormData };
-		console.log(userData);
 
 		try {
 			await serverApi.post('submit-form', {
@@ -188,7 +198,13 @@ function App() {
 	};
 
 	const hashurl = window.location.hash;
-	const accessToken = hashurl.split('=')[1];
+	let accessToken = hashurl.substring(
+		hashurl.indexOf('#') + 1,
+		hashurl.indexOf('&') !== -1 ? hashurl.indexOf('&') : hashurl.length
+	);
+	if (accessToken) {
+		accessToken = accessToken.split('=')[1];
+	}
 	if (!accessToken) {
 		return <div>Error Not Authorised - Go away!</div>;
 	}
