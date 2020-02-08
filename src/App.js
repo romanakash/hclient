@@ -55,6 +55,7 @@ function App() {
 					setResumeLink(form_data.resumeLink);
 
 					setFormDefault(form_data);
+					setIsSaved(true);
 				} else {
 					console.log('Error connecting to mlh');
 				}
@@ -129,7 +130,7 @@ function App() {
 		const acceptSharing = event.target[6].value;
 		const acceptCodeOfConduct = event.target[7].value;
 		const acceptMlhPrivacy = event.target[8].value;
-		console.log(acceptSharing);
+
 		if (!why) {
 			alert(
 				'Please let us know why you would like to attend CreatED 2020'
@@ -138,11 +139,6 @@ function App() {
 		}
 		if (!project) {
 			alert('Remember to let us know about you favourite project');
-			return;
-		}
-
-		if (!file && resumeLink === '') {
-			alert('Upload you resume');
 			return;
 		}
 
@@ -163,7 +159,7 @@ function App() {
 			return;
 		}
 
-		if (!file && resumeLink === '') {
+		if (!file && resumeLink.length === 0) {
 			alert('Upload your resume');
 			return;
 		}
@@ -357,12 +353,12 @@ function App() {
 							{isUploading && (
 								<p>Progress: {uploadProgress + '\n'}</p>
 							)}
-							{resumeLink !== '' && (
+							{resumeLink.length !== 0 ? (
 								<p>
 									File uploaded sucessfully, Choose file again
 									to reupload
 								</p>
-							)}
+							) : null}
 						</Label>
 						<FileUploader
 							ref={uploader}
