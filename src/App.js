@@ -6,6 +6,7 @@ import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
+
 require('dotenv').config();
 
 const config = {
@@ -55,6 +56,7 @@ function App() {
 					setResumeLink(form_data.resumeLink);
 
 					setFormDefault(form_data);
+					setCurrentFormData(form_data);
 					setIsSaved(true);
 				} else {
 					console.log('Error connecting to mlh');
@@ -88,6 +90,8 @@ function App() {
 
 	const [isSaved, setIsSaved] = useState(false);
 
+	const [currentFormData, setCurrentFormData] = useState({});
+
 	const uploader = useRef(null);
 
 	const handleUploadStart = () => {
@@ -99,8 +103,20 @@ function App() {
 		setUploadProgress(progress);
 	};
 
-	const handleUploadSuccess = filename => {
-		setResumeLink(filename);
+	const handleUploadSuccess = async filename => {
+		const newFormData = Object.assign({}, currentFormData, {
+			resumeLink: filename
+		});
+		const userData = { mlh_data: mlhData, form_data: newFormData };
+
+		try {
+			await serverApi.post('submit-form', {
+				data: userData
+			});
+			setIsSaved(true);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const handleUploadError = error => {
@@ -183,16 +199,8 @@ function App() {
 				resumeLink
 			}
 		);
-		const userData = { mlh_data: mlhData, form_data: newFormData };
 
-		try {
-			await serverApi.post('submit-form', {
-				data: userData
-			});
-			setIsSaved(true);
-		} catch (err) {
-			console.log(err);
-		}
+		setCurrentFormData(newFormData);
 	};
 
 	const hashurl = window.location.hash;
