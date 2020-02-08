@@ -8,7 +8,6 @@ import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
 require('dotenv').config();
 
-
 const config = {
 	apiKey: process.env.REACT_APP_GCS_API_KEY,
 	storageBucket: process.env.REACT_APP_GCS_STORAGE_BUCKET
@@ -60,7 +59,7 @@ function App() {
 					console.log('Error connecting to mlh');
 				}
 			});
-		} 
+		}
 	}, []);
 
 	const [mlhData, setMLHData] = useState({});
@@ -85,6 +84,8 @@ function App() {
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [file, setFile] = useState(null);
 	const [choseFile, setChoseFile] = useState(false);
+
+	const [isSaved, setIsSaved] = useState(false);
 
 	const uploader = useRef(null);
 
@@ -144,7 +145,7 @@ function App() {
 			alert('Upload you resume');
 			return;
 		}
-		
+
 		if (acceptSharing !== 'true') {
 			alert(
 				'Not submitted, we need to share your cv with our sponsors to keep them happy'
@@ -192,6 +193,7 @@ function App() {
 			await serverApi.post('submit-form', {
 				data: userData
 			});
+			setIsSaved(true);
 		} catch (err) {
 			console.log(err);
 		}
@@ -212,10 +214,22 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<h1 align="center">CreatED 2020 Application Form</h1>
+			{submitted && (
+				<h3 align="center">
+					Application submitted succesfully, you can edit and submit
+					again
+				</h3>
+			)}
+			{isSaved ? (
+				<h4 align="center">Application saved</h4>
+			) : (
+				<h4 align="center">Recent changes not saved</h4>
+			)}
 			<Box
 				as="form"
 				onSubmit={handleSubmit}
 				style={{ fontFamily: 'Helvetica', paddingTop: 20 }}
+				onChange={() => setIsSaved(false)}
 			>
 				<Flex
 					style={{
@@ -326,41 +340,44 @@ function App() {
 						</Label>
 					</Box>
 				</Flex>
-				<Flex  style={{
+				<Flex
+					style={{
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
 						paddingTop: 30
-						
-					}}>
-				<Box width={1/2}>
-					<Label>
-						<Text pb={2}> Please upload a copy of your cv:</Text>
-						{isUploading && (
-							<p>Progress: {uploadProgress + '\n'}</p>
-						)}
-						{resumeLink !== '' && (
-							<p>
-								File uploaded sucessfully, Choose file again to
-								reupload
-							</p>
-						)}
-					</Label>
-					<FileUploader
-						ref={uploader}
-						accept="application/pdf"
-						id="resume"
-						name="resume"
-						randomizeFilename={true}
-						storageRef={firebase.storage().ref('resumes')}
-						onUploadStart={handleUploadStart}
-						onUploadError={handleUploadError}
-						onUploadSuccess={handleUploadSuccess}
-						onChange={handleChangeFile}
-						onProgress={handleProgress}
-						
-					/>
-				</Box>
+					}}
+				>
+					<Box width={1 / 2}>
+						<Label>
+							<Text pb={2}>
+								{' '}
+								Please upload a copy of your cv:
+							</Text>
+							{isUploading && (
+								<p>Progress: {uploadProgress + '\n'}</p>
+							)}
+							{resumeLink !== '' && (
+								<p>
+									File uploaded sucessfully, Choose file again
+									to reupload
+								</p>
+							)}
+						</Label>
+						<FileUploader
+							ref={uploader}
+							accept="application/pdf"
+							id="resume"
+							name="resume"
+							randomizeFilename={true}
+							storageRef={firebase.storage().ref('resumes')}
+							onUploadStart={handleUploadStart}
+							onUploadError={handleUploadError}
+							onUploadSuccess={handleUploadSuccess}
+							onChange={handleChangeFile}
+							onProgress={handleProgress}
+						/>
+					</Box>
 				</Flex>
 
 				<Flex
