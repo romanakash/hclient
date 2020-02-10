@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
-import { Box, Flex, Button, Link, Text } from 'rebass';
+import { Box, Flex, Button, Link, Text, Image } from 'rebass';
 import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
+import logo from "./icon.png";
 
 require('dotenv').config();
 
@@ -113,11 +114,12 @@ function App() {
 			await serverApi.post('submit-form', {
 				data: userData
 			});
-			setIsSaved(true);
+			setIsSaved(true);			
 		} catch (err) {
 			console.log(err);
 		}
 	};
+
 
 	const handleUploadError = error => {
 		setIsUploading(false);
@@ -139,6 +141,7 @@ function App() {
 	const handleSubmit = async event => {
 		event.preventDefault();
 		const dietaryRestrictions = event.target[0].value;
+		console.log(event.target[0]);
 		const why = event.target[1].value;
 		const project = event.target[2].value;
 		const isSleepingArrangements = event.target[3].value;
@@ -158,9 +161,10 @@ function App() {
 			return;
 		}
 
+
 		if (acceptSharing !== 'true') {
 			alert(
-				'Not submitted, we need to share your cv with our sponsors to keep them happy'
+				'Not submitted, please accept sharing of your cv with our sponsors.'
 			);
 			return;
 		}
@@ -184,6 +188,9 @@ function App() {
 			uploader.current.startUpload(file);
 			setChoseFile(false);
 		}
+		if(isSaved){
+			alert('saved successfully');
+		}
 
 		const newFormData = Object.assign(
 			{},
@@ -201,6 +208,16 @@ function App() {
 		);
 
 		setCurrentFormData(newFormData);
+		const userData = { mlh_data: mlhData, form_data: newFormData };
+
+		try {
+			await serverApi.post('submit-form', {
+				data: userData
+			});
+			setIsSaved(true);			
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const hashurl = window.location.hash;
@@ -216,25 +233,32 @@ function App() {
 	}
 
 	return (
-		<ThemeProvider theme={theme}>
-			<h1 align="center">CreatED 2020 Application Form</h1>
-			{submitted && (
-				<h3 align="center">
-					Application submitted succesfully, you can edit and submit
-					again
-				</h3>
-			)}
-			{isSaved ? (
-				<h4 align="center">Application saved</h4>
-			) : (
-				<h4 align="center">Recent changes not saved</h4>
-			)}
+		<ThemeProvider theme={theme} >
+			
+			
+			
 			<Box
 				as="form"
 				onSubmit={handleSubmit}
-				style={{ fontFamily: 'Helvetica', paddingTop: 20 }}
-				onChange={() => setIsSaved(false)}
+				align="center"
+				flexDirection= "column"
+				style={{ fontFamily: 'Helvetica', backgroundColor: "#17153a", position: "absolute", zIndex:"-1", marginTop:"0%", paddingTop:"0%", alignItems:"center", color: "white", backgroundSize: "cover"}}
+				
 			>
+			<a href="https://createdhack.com/" style={{dipslay:"inline-block"}} ><img src={logo} style={{backgroundImage:{logo}, height:"10%", width:"10%"}}></img></a>
+
+			<h1 align="center" style={{backgroundColor: "#17153a", color:"lightgreen", marginBottom: "5%"}}>CreatED 2020 Application Form</h1>
+				{submitted && (
+			<h3 align="center" style={{color:"lightblue"}}>
+			Application submitted succesfully, you can edit and submit
+			again
+		</h3>	
+		)}
+		{isSaved ? (
+			<h4 align="center" style={{color:"orange"}}>Application saved</h4>
+	) : (
+		<h4 align="center" style={{color:"orange"}}>Recent changes not saved</h4>
+	)}
 				<Flex
 					style={{
 						display: 'flex',
@@ -505,8 +529,8 @@ function App() {
 						paddingTop: 30
 					}}
 				>
-					<Box>
-						<Button type="submit" variant={'primary'} mr={5}>
+					<Box style={{paddingBottom:"5%", paddingTop: "2%"}}>
+						<Button type="submit" variant={'primary'} mr={5} style={{cursor:"pointer"}}>
 							Save
 						</Button>
 						<Button
@@ -514,12 +538,14 @@ function App() {
 							type="submit"
 							onClick={() => setSubmitted(true)}
 							variant={'primary'}
+							style={{cursor:"pointer"}}
 						>
 							Submit
 						</Button>
 					</Box>
 				</Flex>
 			</Box>
+			
 		</ThemeProvider>
 	);
 }
