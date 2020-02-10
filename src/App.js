@@ -247,11 +247,10 @@ function App() {
 			>
 			<a href="https://createdhack.com/" style={{dipslay:"inline-block"}} ><img src={logo} style={{backgroundImage:{logo}, height:"10%", width:"10%"}}></img></a>
 
-			<h1 align="center" style={{backgroundColor: "#17153a", color:"lightgreen", marginBottom: "5%"}}>CreatED 2020 Application Form</h1>
+			<h1 align="center" style={{backgroundColor: "#17153a", color:"lightgreen", marginBottom: "5%"}}>CreatED Hack 2020 Additional Questions</h1>
 				{submitted && (
 			<h3 align="center" style={{color:"lightblue"}}>
-			Application submitted succesfully, you can edit and submit
-			again
+			Your application has been submitted. You can make further changes to the application until the application deadline.
 		</h3>	
 		)}
 		{isSaved ? (
@@ -288,7 +287,7 @@ function App() {
 				>
 					<Box width={1 / 2} py={3}>
 						<Label htmlFor="why">
-							Why do you want to attend CreatED '20? (max. 200
+							Why do you want attend CreatED Hack 2020? (max. 200
 							words)
 						</Label>
 						<Textarea
@@ -308,7 +307,7 @@ function App() {
 				>
 					<Box width={1 / 2}>
 						<Label htmlFor="project">
-							Tell us about your favourite project. (max. 200
+							Describe the coolest project you've worked on. (max. 200
 							words)
 						</Label>
 						<Textarea
