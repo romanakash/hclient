@@ -71,7 +71,6 @@ function App() {
 	const [submitted, setSubmitted] = useState(false);
 
 	const [formDefault, setFormDefault] = useState({
-		dietaryRestrictions: '',
 		why: '',
 		project: '',
 		isFirstTime: false,
@@ -140,15 +139,13 @@ function App() {
 
 	const handleSubmit = async event => {
 		event.preventDefault();
-		const dietaryRestrictions = event.target[0].value;
-		console.log(event.target[0]);
-		const why = event.target[1].value;
-		const project = event.target[2].value;
-		const isSleepingArrangements = event.target[3].value;
-		const isFirstTime = event.target[4].value;
-		const acceptSharing = event.target[6].value;
-		const acceptCodeOfConduct = event.target[7].value;
-		const acceptMlhPrivacy = event.target[8].value;
+		const why = event.target[0].value;
+		const project = event.target[1].value;
+		const isSleepingArrangements = event.target[2].value;
+		const isFirstTime = event.target[3].value;
+		const acceptSharing = event.target[5].value;
+		const acceptCodeOfConduct = event.target[6].value;
+		const acceptMlhPrivacy = event.target[7].value;
 
 		if (!why) {
 			alert(
@@ -191,13 +188,15 @@ function App() {
 		if(isSaved){
 			alert('saved successfully');
 		}
+		if(submitted){
+			window.location.replace("https://createdhack.com/thanks.html");
+		}
 
 		const newFormData = Object.assign(
 			{},
 			formData,
 			{ submitted: submitted },
 			{
-				dietaryRestrictions,
 				why,
 				project,
 				isFirstTime: isFirstTime === 'true' ? true : false,
@@ -259,25 +258,6 @@ function App() {
 	) : (
 		<h4 align="center" style={{color:"orange"}}>Recent changes not saved</h4>
 	)}
-				<Flex
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center'
-					}}
-				>
-					<Box width={1 / 2} py={3}>
-						<Label htmlFor="dietaryRestrictions">
-							Do you have any specific dietary requirements?
-						</Label>
-						<Input
-							id="dietary"
-							name="dietary"
-							defaultValue={formDefault.dietaryRestrictions}
-						/>
-					</Box>
-				</Flex>
-
 				<Flex
 					style={{
 						display: 'flex',
