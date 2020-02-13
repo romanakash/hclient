@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import theme from '@rebass/preset';
-import { Box, Flex, Button, Link, Text, Image } from 'rebass';
-import { Label, Input, Textarea, Checkbox } from '@rebass/forms';
+import { Box, Flex, Button, Link, Text } from 'rebass';
+import { Label, Textarea, Checkbox } from '@rebass/forms';
 import firebase from 'firebase';
 import axios from 'axios';
 import FileUploader from 'react-firebase-file-uploader';
-import logo from "./icon.png";
+import logo from './icon.png';
 
 require('dotenv').config();
 
@@ -28,6 +28,8 @@ serverApi.interceptors.request.use(config => {
 
 function App() {
 	useEffect(() => {
+		document.title = 'CreatED apply';
+
 		const hashurl = window.location.hash;
 
 		let accessToken = hashurl.substring(
@@ -54,7 +56,9 @@ function App() {
 					setMLHData(mlh_data);
 					setFormData(form_data);
 					setSubmitted(form_data.submitted);
-					setResumeLink(form_data.resumeLink);
+					if (form_data.resumeLink) {
+						setResumeLink(form_data.resumeLink);
+					}
 
 					setFormDefault(form_data);
 					setCurrentFormData(form_data);
@@ -69,6 +73,7 @@ function App() {
 	const [mlhData, setMLHData] = useState({});
 	const [formData, setFormData] = useState({});
 	const [submitted, setSubmitted] = useState(false);
+	const [localSubmit, setLocalSubmit] = useState(false);
 
 	const [formDefault, setFormDefault] = useState({
 		why: '',
@@ -113,12 +118,11 @@ function App() {
 			await serverApi.post('submit-form', {
 				data: userData
 			});
-			setIsSaved(true);			
+			setIsSaved(true);
 		} catch (err) {
 			console.log(err);
 		}
 	};
-
 
 	const handleUploadError = error => {
 		setIsUploading(false);
@@ -158,7 +162,6 @@ function App() {
 			return;
 		}
 
-
 		if (acceptSharing !== 'true') {
 			alert(
 				'Not submitted, please accept sharing of your cv with our sponsors.'
@@ -185,11 +188,11 @@ function App() {
 			uploader.current.startUpload(file);
 			setChoseFile(false);
 		}
-		if(isSaved){
+		if (isSaved) {
 			alert('saved successfully');
 		}
-		if(submitted){
-			window.location.replace("https://createdhack.com/thanks.html");
+		if (localSubmit) {
+			window.location.replace('https://createdhack.com/thanks.html');
 		}
 
 		const newFormData = Object.assign(
@@ -213,7 +216,7 @@ function App() {
 			await serverApi.post('submit-form', {
 				data: userData
 			});
-			setIsSaved(true);			
+			setIsSaved(true);
 		} catch (err) {
 			console.log(err);
 		}
@@ -232,31 +235,64 @@ function App() {
 	}
 
 	return (
-		<ThemeProvider theme={theme} >
-			
-			
-			
+		<ThemeProvider theme={theme}>
 			<Box
 				as="form"
 				onSubmit={handleSubmit}
 				align="center"
-				flexDirection= "column"
-				style={{ fontFamily: 'Helvetica', backgroundColor: "#17153a", position: "absolute", zIndex:"-1", marginTop:"0%", paddingTop:"0%", alignItems:"center", color: "white", backgroundSize: "cover"}}
-				
+				flexDirection="column"
+				style={{
+					fontFamily: 'Helvetica',
+					backgroundColor: '#17153a',
+					position: 'absolute',
+					zIndex: '-1',
+					marginTop: '0%',
+					paddingTop: '0%',
+					alignItems: 'center',
+					color: 'white',
+					backgroundSize: 'cover'
+				}}
 			>
-			<a href="https://createdhack.com/" style={{dipslay:"inline-block"}} ><img src={logo} style={{backgroundImage:{logo}, height:"10%", width:"10%"}}></img></a>
+				<a
+					href="https://createdhack.com/"
+					style={{ dipslay: 'inline-block' }}
+				>
+					<img
+						src={logo}
+						style={{
+							backgroundImage: { logo },
+							height: '10%',
+							width: '10%'
+						}}
+					></img>
+				</a>
 
-			<h1 align="center" style={{backgroundColor: "#17153a", color:"lightgreen", marginBottom: "5%"}}>CreatED Hack 2020 Additional Questions</h1>
+				<h1
+					align="center"
+					style={{
+						backgroundColor: '#17153a',
+						color: 'lightgreen',
+						marginBottom: '5%'
+					}}
+				>
+					CreatED Hack 2020 Additional Questions
+				</h1>
 				{submitted && (
-			<h3 align="center" style={{color:"lightblue"}}>
-			Your application has been submitted. You can make further changes to the application until the application deadline.
-		</h3>	
-		)}
-		{isSaved ? (
-			<h4 align="center" style={{color:"orange"}}>Application saved</h4>
-	) : (
-		<h4 align="center" style={{color:"orange"}}>Recent changes not saved</h4>
-	)}
+					<h3 align="center" style={{ color: 'lightblue' }}>
+						Your application has been submitted. You can make
+						further changes to the application until the application
+						deadline.
+					</h3>
+				)}
+				{isSaved ? (
+					<h4 align="center" style={{ color: 'orange' }}>
+						Application saved
+					</h4>
+				) : (
+					<h4 align="center" style={{ color: 'orange' }}>
+						Recent changes not saved
+					</h4>
+				)}
 				<Flex
 					style={{
 						display: 'flex',
@@ -287,8 +323,8 @@ function App() {
 				>
 					<Box width={1 / 2}>
 						<Label htmlFor="project">
-							Describe the coolest project you've worked on. (max. 200
-							words)
+							Describe the coolest project you've worked on. (max.
+							200 words)
 						</Label>
 						<Textarea
 							id="project"
@@ -508,23 +544,30 @@ function App() {
 						paddingTop: 30
 					}}
 				>
-					<Box style={{paddingBottom:"5%", paddingTop: "2%"}}>
-						<Button type="submit" variant={'primary'} mr={5} style={{cursor:"pointer"}}>
+					<Box style={{ paddingBottom: '5%', paddingTop: '2%' }}>
+						<Button
+							type="submit"
+							variant={'primary'}
+							mr={5}
+							style={{ cursor: 'pointer' }}
+						>
 							Save
 						</Button>
 						<Button
 							px={2}
 							type="submit"
-							onClick={() => setSubmitted(true)}
+							onClick={() => {
+								setLocalSubmit(true);
+								setSubmitted(true);
+							}}
 							variant={'primary'}
-							style={{cursor:"pointer"}}
+							style={{ cursor: 'pointer' }}
 						>
 							Submit
 						</Button>
 					</Box>
 				</Flex>
 			</Box>
-			
 		</ThemeProvider>
 	);
 }
