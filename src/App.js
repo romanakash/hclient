@@ -188,11 +188,13 @@ function App() {
 			uploader.current.startUpload(file);
 			setChoseFile(false);
 		}
-		if (isSaved) {
+		if (isSaved && !localSubmit) {
 			alert('saved successfully');
 		}
 		if (localSubmit) {
-			window.location.replace('https://createdhack.com/thanks.html');
+			setTimeout(() => {
+				window.location.replace('https://createdhack.com/thanks.html');
+			}, 3000);
 		}
 
 		const newFormData = Object.assign(
@@ -233,6 +235,11 @@ function App() {
 	if (!accessToken) {
 		return <div>Error Not Authorised - Go away!</div>;
 	}
+
+	const generateFilename = () => {
+		const name = parseInt(mlhData.id, 10) + ':' + parseInt(Date.now());
+		return name;
+	};
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -412,7 +419,7 @@ function App() {
 							accept="application/pdf"
 							id="resume"
 							name="resume"
-							randomizeFilename={true}
+							filename={() => generateFilename()}
 							storageRef={firebase.storage().ref('resumes')}
 							onUploadStart={handleUploadStart}
 							onUploadError={handleUploadError}
