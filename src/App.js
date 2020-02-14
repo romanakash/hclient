@@ -53,16 +53,18 @@ function App() {
 			getMLHId().then(res => {
 				if (res.data.status === 'OK') {
 					const { mlh_data, form_data } = res.data;
-					setMLHData(mlh_data);
-					setFormData(form_data);
-					setSubmitted(form_data.submitted);
-					if (form_data.resumeLink) {
-						setResumeLink(form_data.resumeLink);
-					}
+					if (form_data) {
+						setMLHData(mlh_data);
+						setFormData(form_data);
+						setSubmitted(form_data.submitted);
+						if (form_data.resumeLink) {
+							setResumeLink(form_data.resumeLink);
+						}
 
-					setFormDefault(form_data);
-					setCurrentFormData(form_data);
-					setIsSaved(true);
+						setFormDefault(form_data);
+						setCurrentFormData(form_data);
+						setIsSaved(true);
+					}
 				} else {
 					console.log('Error connecting to mlh');
 				}
@@ -108,21 +110,7 @@ function App() {
 		setUploadProgress(progress);
 	};
 
-	const handleUploadSuccess = async filename => {
-		const newFormData = Object.assign({}, currentFormData, {
-			resumeLink: filename
-		});
-		const userData = { mlh_data: mlhData, form_data: newFormData };
-
-		try {
-			await serverApi.post('submit-form', {
-				data: userData
-			});
-			setIsSaved(true);
-		} catch (err) {
-			console.log(err);
-		}
-	};
+	const handleUploadSuccess = async filename => {};
 
 	const handleUploadError = error => {
 		setIsUploading(false);
@@ -191,11 +179,6 @@ function App() {
 		if (isSaved && !localSubmit) {
 			alert('saved successfully');
 		}
-		if (localSubmit) {
-			setTimeout(() => {
-				window.location.replace('https://createdhack.com/thanks.html');
-			}, 3000);
-		}
 
 		const newFormData = Object.assign(
 			{},
@@ -207,7 +190,7 @@ function App() {
 				isFirstTime: isFirstTime === 'true' ? true : false,
 				isSleepingArrangements:
 					isSleepingArrangements === 'true' ? true : false,
-				resumeLink
+				resumeLink: generateFilename()
 			}
 		);
 
@@ -221,6 +204,12 @@ function App() {
 			setIsSaved(true);
 		} catch (err) {
 			console.log(err);
+		}
+
+		if (localSubmit) {
+			setTimeout(() => {
+				window.location.replace('https://createdhack.com/thanks.html');
+			}, 5000);
 		}
 	};
 
@@ -237,7 +226,7 @@ function App() {
 	}
 
 	const generateFilename = () => {
-		const name = parseInt(mlhData.id, 10) + ':' + parseInt(Date.now());
+		const name = parseInt(mlhData.id, 10);
 		return name;
 	};
 
